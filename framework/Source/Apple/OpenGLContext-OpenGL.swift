@@ -28,12 +28,32 @@ public class OpenGLContext: SerialDispatch {
 
     init() {
         serialDispatchQueue.setSpecific(key:dispatchQueueKey, value:81)
-
-        let pixelFormatAttributes:[NSOpenGLPixelFormatAttribute] = [
-            NSOpenGLPixelFormatAttribute(NSOpenGLPFADoubleBuffer),
-            NSOpenGLPixelFormatAttribute(NSOpenGLPFAAccelerated), 0,
-            0
-        ]
+        var pixelFormatAttributes:[NSOpenGLPixelFormatAttribute];
+        if #available(OSX 10.10, *) {
+            pixelFormatAttributes = [
+                NSOpenGLPixelFormatAttribute(NSOpenGLPFADoubleBuffer),
+                NSOpenGLPixelFormatAttribute(NSOpenGLPFAAccelerated), 0,
+                NSOpenGLPixelFormatAttribute(NSOpenGLPFADepthSize), 24,
+                //            NSOpenGLProfileVersionLegacy
+                //            NSOpenGLProfileVersion3_2Core,
+                //            NSOpenGLProfileVersion4_1Core,
+                NSOpenGLPixelFormatAttribute(NSOpenGLPFAOpenGLProfile), NSOpenGLPixelFormatAttribute(NSOpenGLProfileVersion4_1Core),
+                NSOpenGLPixelFormatAttribute(NSOpenGLPFAAllowOfflineRenderers),
+                0
+            ]
+        } else {
+            pixelFormatAttributes = [
+                NSOpenGLPixelFormatAttribute(NSOpenGLPFADoubleBuffer),
+                NSOpenGLPixelFormatAttribute(NSOpenGLPFAAccelerated), 0,
+                NSOpenGLPixelFormatAttribute(NSOpenGLPFADepthSize), 24,
+                //            NSOpenGLProfileVersionLegacy
+                //            NSOpenGLProfileVersion3_2Core,
+                //            NSOpenGLProfileVersion4_1Core,
+                NSOpenGLPixelFormatAttribute(NSOpenGLPFAOpenGLProfile), NSOpenGLPixelFormatAttribute(NSOpenGLProfileVersion3_2Core),
+                NSOpenGLPixelFormatAttribute(NSOpenGLPFAAllowOfflineRenderers),
+                0
+            ]
+        }
         
         guard let pixelFormat = NSOpenGLPixelFormat(attributes:pixelFormatAttributes) else {
             fatalError("No appropriate pixel format found when creating OpenGL context.")
