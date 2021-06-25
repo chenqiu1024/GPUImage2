@@ -11,7 +11,9 @@ public class RenderView:NSOpenGLView, ImageConsumer {
     public let maximumInputs:UInt = 1
     private lazy var displayShader:ShaderProgram = {
         sharedImageProcessingContext.makeCurrentContext()
-        self.openGLContext = sharedImageProcessingContext.context
+        DispatchQueue.main.async {
+            self.openGLContext = sharedImageProcessingContext.context
+        }
         return sharedImageProcessingContext.passthroughShader
     }()
 
